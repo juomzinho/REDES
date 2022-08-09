@@ -10,7 +10,7 @@ dest = (HOST, PORT)
 def recvMsg():
     while True:
         msg = tcp.recv(1024).decode('utf8')
-        print("Server", msg)
+        print("Server: ", msg)
         sleep(0.1)
 
 def main():
