@@ -1,27 +1,28 @@
-from nis import cat
 import socket
-from sys import orig_argv
 import threading
+from time import sleep
 
 HOST = 'localhost'
-PORT = 1023
+PORT = 1240
+client = ''
 
 tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcp.bind((HOST, PORT))
 
-def sendMsg(con):
+tcp.listen(1)
+con, addr = tcp.accept()
+
+def recvMsg():
     while True:
-        msg = input()
-        try:
-            con.send
-        except Exception as e:
-            print(e)
+        msg = con.recv(1024).decode("utf8")
+        print("Client:", msg)
+        sleep(0.1)
 
 def main():
-    tcp.listen(1)
-    con, addr = tcp.accept()
-    print("Conectado")
-    threading.Thread(target=sendMsg, args=con)
-    
+    threading.Thread(target=recvMsg).start()
+    while True:
+        msg = input()
+        con.send(bytes(msg, "utf8"))
+        sleep(0.1)
 
 main()
