@@ -2,7 +2,7 @@ import socket
 import threading
 from time import sleep
 
-HOST = 'localhost'
+HOST = input("Insira seu ip: ")
 PORT = 1240
 client = ''
 
@@ -11,6 +11,8 @@ tcp.bind((HOST, PORT))
 
 tcp.listen(1)
 con, addr = tcp.accept()
+
+print("Conexão aceita")
 
 def recvMsg():
     while True:

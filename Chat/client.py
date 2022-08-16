@@ -2,10 +2,9 @@ import socket
 from time import sleep
 import threading
 
-HOST = 'localhost'
-PORT = 1240
+HOST = input("Insira o ip no qual deseja se conectar: ")
+PORT = input("Insira a porta: ")
 tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-dest = (HOST, PORT)
 
 def recvMsg():
     while True:
@@ -17,13 +16,12 @@ def main():
     global HOST
     global PORT
 
-    print("Insira o IP em que deseja se conectar")
-    HOST = input()
-    print("Insira a porta em que deseja se conectar")
-    HOST = input()
-    print(HOST)
-
-    tcp.connect(dest)
+    try: 
+        dest = (HOST, int(PORT))
+        tcp.connect(dest)
+    except Exception as e:
+        print(e)
+        return
 
     threading.Thread(target=recvMsg).start()
 
