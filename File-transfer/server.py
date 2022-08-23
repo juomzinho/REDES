@@ -14,7 +14,7 @@ con, addr = tcp.accept()
 
 print("Conexão aceita")
 
-arq = open('./download.jpeg', 'rb')
+arq = open('./file.txt', 'rb')
 print(arq)
 
 def recvMsg():
@@ -26,7 +26,8 @@ def recvMsg():
 def main():
     threading.Thread(target=recvMsg).start()
     # while True:
-    con.sendall(arq)
+    for i in arq:
+        con.send(i)
     # sleep(0.1)
 
 main()
