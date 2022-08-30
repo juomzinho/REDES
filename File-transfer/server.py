@@ -1,3 +1,4 @@
+from posixpath import split
 import socket
 import threading
 from time import sleep
@@ -5,6 +6,7 @@ from time import sleep
 HOST = input("Insira seu ip: ")
 PORT = 1240
 client = ''
+SEPARATOR = "<SEPARATOR>"
 
 tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcp.bind((HOST, PORT))
@@ -12,22 +14,22 @@ tcp.bind((HOST, PORT))
 tcp.listen(1)
 con, addr = tcp.accept()
 
-print("Conexão aceita")
-
-arq = open('./file.txt', 'rb')
-print(arq)
-
-def recvMsg():
-    while True:
-        msg = con.recv(1024).decode("utf8")
-        print("Client:", msg)
-        sleep(0.1)
+print("{addr} is connected!")
 
 def main():
-    threading.Thread(target=recvMsg).start()
-    # while True:
-    for i in arq:
-        con.send(i)
-    # sleep(0.1)
+    msg = con.recv(1024).decode('utf-8')
+    bufferSize, file, size = msg.split(SEPARATOR)
+    print(bufferSize, file, size)
+    try:
+        arq = open(file, 'wb')
+        while True:
+            bytesRecv = con.recv(int(bufferSize))     
+            if not bytesRecv:
+                break
+            arq.write(bytesRecv)
+    except Exception as e:
+        print(e)
+        pass
+    con.close()
 
 main()
