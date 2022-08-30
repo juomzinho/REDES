@@ -44,7 +44,7 @@ def main():
     # threading.Thread(target=recvMsg).start()
     file = input("Insira o arquivo: ")
 
-    sendFile("download.jpeg")
+    sendFile(file)
 
     # while True:
     #     msg = input()
