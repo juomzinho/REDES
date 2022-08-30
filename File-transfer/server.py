@@ -1,7 +1,7 @@
 from posixpath import split
 import socket
-import threading
 from time import sleep
+import os
 
 HOST = input("Insira seu ip: ")
 PORT = 1240
@@ -27,6 +27,7 @@ def main():
             if not bytesRecv:
                 break
             arq.write(bytesRecv)
+        print("Tamanho do arquivo: ", os.path.getsize(arq))
     except Exception as e:
         print(e)
         pass
