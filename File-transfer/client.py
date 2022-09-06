@@ -1,8 +1,6 @@
 import socket
-from time import sleep
-import threading
+from time import sleep, time
 import os
-from time import time
 
 HOST = input("Insira o ip no qual deseja se conectar: ")
 PORT = input("Insira a porta: ")
@@ -14,7 +12,7 @@ bufferSize = int(input("Insira o tamanho do buffer: "))
 def sendFile(file, ):
     i = 0
     size = os.path.getsize(file)
-
+    print("Tamanho do arquivo a ser enviado: ", size)
     tcp.send(f"{str(bufferSize)}{SEPARATOR}{file}{SEPARATOR}{size}".encode('utf-8'))
     sleep(5)
     with open(file, 'rb') as arq:
@@ -22,12 +20,12 @@ def sendFile(file, ):
         while True:
             bytesToSend = arq.read(bufferSize)
             if not bytesToSend:
-                fim = time
+                fim = time()
                 break
             tcp.sendall(bytesToSend)
             i += 1
 
-    print("Tempo de transmissão: ", (int(fim) - int(inicio)))
+    print("Tempo de transmissão: ", (fim - inicio))
     print("Total de pacotes enviados: ", i)
 
     tcp.close()
