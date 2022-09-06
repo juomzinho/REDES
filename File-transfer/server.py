@@ -20,7 +20,7 @@ def main():
     bufferSize, file, size = msg.split(SEPARATOR)
     print("Tamanho do buffer", bufferSize)
     print("Nome do arquivo", file)
-    print("Tamanho do arquivo enviado", size, " bits")
+    print("Tamanho do arquivo enviado", size, "bits")
     try:
         if os.path.exists(file):
             os.remove(file)
@@ -30,7 +30,7 @@ def main():
             if not bytesRecv:
                 break
             arq.write(bytesRecv)
-        print("Tamanho do arquivo recebido: ", (os.path.getsize(file) * 8), " bits")
+        print("Tamanho do arquivo recebido: ", (os.path.getsize(file) * 8), "bits")
         arq.close()
     except Exception as e:
         print(e)

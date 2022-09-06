@@ -12,7 +12,7 @@ bufferSize = int(input("Insira o tamanho do buffer: "))
 def sendFile(file, ):
     i = 0
     size = os.path.getsize(file) * 8
-    print("Tamanho do arquivo a ser enviado: ", size, " bits")
+    print("Tamanho do arquivo a ser enviado: ", size, "bits")
     tcp.send(f"{str(bufferSize)}{SEPARATOR}{file}{SEPARATOR}{size}".encode('utf-8'))
     sleep(5)
     with open(file, 'rb') as arq:
@@ -25,7 +25,7 @@ def sendFile(file, ):
             tcp.sendall(bytesToSend)
             i += 1
 
-    print("Tempo de transmissão: ", size / (fim - inicio), " bits/seg")
+    print("Tempo de transmissão: ", size / (fim - inicio), "bits/seg")
     print("Total de pacotes enviados: ", i)
 
     tcp.close()
