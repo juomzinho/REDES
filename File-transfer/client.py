@@ -43,16 +43,7 @@ def main():
         print(e)
         return
 
-    # threading.Thread(target=recvMsg).start()
     file = input("Insira o arquivo: ")
     sendFile(file)
-
-    # while True:
-    #     msg = input()
-    #     tcp.send(bytes(msg, "utf8"))
-    #     sleep(0.1)
-
-
-
 
 main()
