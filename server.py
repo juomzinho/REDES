@@ -1,14 +1,15 @@
 from posixpath import split
 import socket
+import threading
 from time import sleep
-import os
 
+HOST = input("Insira seu ip: ")
 PORT = 1240
 client = ''
 SEPARATOR = "<SEPARATOR>"
 
 tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-tcp.bind(("", PORT))
+tcp.bind((HOST, PORT))
 
 tcp.listen(1)
 con, addr = tcp.accept()
@@ -26,13 +27,10 @@ def main():
             if not bytesRecv:
                 break
             arq.write(bytesRecv)
-        arq.close()
+        print("Deu bom")
     except Exception as e:
         print(e)
         pass
-    arq = open(file, 'rb')
-    print("Tamanho do arquivo: ", os.path.getsize(arq))
-    arq.close()
     con.close()
 
 main()
