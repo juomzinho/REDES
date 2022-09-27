@@ -8,6 +8,22 @@ tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 SEPARATOR = "<SEPARATOR>"
 bufferSize = int(input("Insira o tamanho do buffer: "))
 
+def regexTime(num):
+    string = str(num)
+    newString = ''
+    value = len(string)
+    for i in range(0, len(string)):
+        if((value - i) == 2):
+            newString += ','
+        if((value - i) == 5):
+            newString += '.'
+        if((value - i) == 8):
+            newString += '.'
+        if((value - i) == 11):
+            newString += '.'
+        newString += string[i]
+    return newString
+
 
 def sendFile(file, ):
     i = 0
@@ -26,7 +42,7 @@ def sendFile(file, ):
             i += 1
 
     tempo = size / (fim - inicio)
-    print("Tempo de transmissão:", tempo, "bits/seg")
+    print("Tempo de transmissão:", regexTime(tempo), "bits/seg")
     print("Total de pacotes enviados: ", i)
 
     tcp.close()
