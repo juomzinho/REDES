@@ -25,7 +25,8 @@ def sendFile(file, ):
             tcp.sendall(bytesToSend)
             i += 1
 
-    print("Tempo de transmissão: ", size / (fim - inicio), "bits/seg")
+    tempo = size / (fim - inicio)
+    print("Tempo de transmissão:", tempo, "bits/seg")
     print("Total de pacotes enviados: ", i)
 
     tcp.close()
