@@ -2,6 +2,9 @@ from posixpath import split
 import socket
 from time import sleep
 import os
+import locale
+
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 PORT = 1240
 client = ''
@@ -30,7 +33,8 @@ def main():
             if not bytesRecv:
                 break
             arq.write(bytesRecv)
-        print("Tamanho do arquivo recebido: ", (os.path.getsize(file) * 8), "bits")
+        formated = '{:n}'.format(os.path.getsize(file) * 8)
+        print("Tamanho do arquivo recebido:", formated, "bits")
         arq.close()
     except Exception as e:
         print(e)

@@ -1,6 +1,9 @@
 import socket
 from time import sleep, time
 import os
+import locale
+
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 HOST = input("Insira o ip no qual deseja se conectar: ")
 PORT = input("Insira a porta: ")
@@ -17,9 +20,11 @@ def regexTime(num):
             newString += ','
         if((value - i) == 5):
             newString += '.'
-        if((value - i) == 8):
-            newString += '.'
+        # if((value - i) == 8):
+        #     newString += '.'
         if((value - i) == 11):
+            newString += '.'
+        if((value - i) == 14):
             newString += '.'
         newString += string[i]
     return newString
@@ -27,9 +32,10 @@ def regexTime(num):
 
 def sendFile(file, ):
     i = 0
-    size = os.path.getsize(file) * 8
-    print("Tamanho do arquivo a ser enviado: ", size, "bits")
-    tcp.send(f"{str(bufferSize)}{SEPARATOR}{file}{SEPARATOR}{size}".encode('utf-8'))
+    formatedSize = '{:n}'.format(os.path.getsize(file) * 8)
+    size = (os.path.getsize(file) * 8)
+    print("Tamanho do arquivo a ser enviado: ", formatedSize, "bits")
+    tcp.send(f"{str(bufferSize)}{SEPARATOR}{file}{SEPARATOR}{formatedSize}".encode('utf-8'))
     sleep(5)
     with open(file, 'rb') as arq:
         inicio = time()
