@@ -33,7 +33,7 @@ def main():
             if not bytesRecv:
                 break
             arq.write(bytesRecv)
-        formated = '{:n}'.format(os.path.getsize(file) * 8)
+        formated = locale.format_string('%.3f',os.path.getsize(file) * 8, grouping=True)
         print("Tamanho do arquivo recebido:", formated, "bits")
         arq.close()
     except Exception as e:

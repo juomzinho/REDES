@@ -32,7 +32,7 @@ def regexTime(num):
 
 def sendFile(file, ):
     i = 0
-    formatedSize = '{:n}'.format(os.path.getsize(file) * 8)
+    formatedSize = locale.format_string('%.3f',os.path.getsize(file) * 8, grouping=True)
     size = (os.path.getsize(file) * 8)
     print("Tamanho do arquivo a ser enviado: ", formatedSize, "bits")
     tcp.send(f"{str(bufferSize)}{SEPARATOR}{file}{SEPARATOR}{formatedSize}".encode('utf-8'))
@@ -48,7 +48,8 @@ def sendFile(file, ):
             i += 1
 
     tempo = size / (fim - inicio)
-    print("Tempo de transmissão:", regexTime(tempo), "bits/seg")
+    formatedSize = locale.format_string('%.3f', tempo, grouping=True)
+    print("Tempo de transmissão:", formatedSize, "bits/seg")
     print("Total de pacotes enviados: ", i)
 
     tcp.close()
