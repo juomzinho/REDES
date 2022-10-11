@@ -6,12 +6,13 @@ import locale
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
+HOST = input("Insira seu ip: ")
 PORT = 1240
 client = ''
 SEPARATOR = "<SEPARATOR>"
 
 tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-tcp.bind(("", PORT))
+tcp.bind((HOST, PORT))
 
 tcp.listen(1)
 con, addr = tcp.accept()
@@ -33,9 +34,9 @@ def main():
             if not bytesRecv:
                 break
             arq.write(bytesRecv)
+        arq.close()
         formated = locale.format_string('%.3f',os.path.getsize(file) * 8, grouping=True)
         print("Tamanho do arquivo recebido:", formated, "bits")
-        arq.close()
     except Exception as e:
         print(e)
         pass
