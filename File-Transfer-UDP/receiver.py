@@ -28,7 +28,7 @@ class UDPFileTransfer:
             exit(1)
 
         try:
-            udp.bind((HOST, PORT))
+            udp.bind(('', PORT))
 
             data, addr = udp.recvfrom(1024)
            
@@ -64,6 +64,6 @@ class UDPFileTransfer:
             print("Numero de pacotes recebidos: ", arq.tell() // BUFFER + 1)
             
         except Exception as e:
-            pass
+            print(e)
 
 UDPFileTransfer.initialConfigs()

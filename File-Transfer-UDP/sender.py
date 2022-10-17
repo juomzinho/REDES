@@ -47,6 +47,10 @@ class UDPFileTransfer:
             udp.sendto(str(size).encode('ascii'), addr)
 
             cont = 0
+            window = int(input("Insira a janela 2 ou 4: "))
+            if window != 2 and window != 4:
+                print("Janela inválida!")
+                exit()
 
             with open(file, "rb") as arq:
                 start = time()
@@ -58,6 +62,17 @@ class UDPFileTransfer:
                     if cont == 2:
                         sleep(0.05)
                         cont = 0
+                close = time()
+
+                print("Janela de transmissão: ", window)
+                formatedSize = locale.format_string('%.3f',arq.tell(), grouping=True)
+                print("Número de pacotes enviados: ",arq.tell() // BUFFER + 1)
+                print("Tamanho do arquivo: ", formatedSize)
+                print("Tempo de transmissão: ", close - start)
+
+            arq.close()
+
+
             
         except Exception as e:
             print(e)
