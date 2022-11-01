@@ -1,83 +1,104 @@
 import socket
-import sys
+import locale
 from time import sleep, time
 import os
-import locale
+import sys
 
-HOST = ''
-PORT = 1240
-BUFFER = 1000
-
-SEPARATOR = "<SEPARATOR>"
-udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
-class UDPFileTransfer:
-
-    def initialConfigs():
-        global HOST, PORT, udp, BUFFER
-       
+class UDPFileTrasnfer:
+    def __init__(self):
+        self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         if len(sys.argv) == 3:
-            HOST = sys.argv[1]
-            PORT = int(sys.argv[2])
+            self.host = sys.argv[1]
+            self.port = int(sys.argv[2])
+            self.addr = (self.host, self.port)
+            self.buffer = 1000
+            self.sep = "<SEPARATOR>"
         else:
             print("Erro: adicionar parametros na execução do programa  ")
             exit(1)
 
+    def send(self):
+        pacotes_enviados = 0
+        pacotes_perdidos = 0
+        pacotes_recebidos = 0
+        pacotes = []
+
         Option = int(input('Selecione buffer \n1 - 1000 \n2 - 1500\n'))
         if Option == 2:
-            BUFFER = 1500
+            self.buffer = 1500
         elif Option != 1:
             print("Opção inválida!")
             exit()
 
+        print("Host: ",self.host, ",Porta: ", self.port
+            , ',Buffer: ', self.buffer)
 
-        print("Host: ",HOST, ",Porta: ", PORT, ',Buffer: ', BUFFER)
-
-        try: 
-            addr = (HOST, PORT)
-
-            file = input("Insira o arquivo a ser enviado: ")
-            size = os.path.getsize(file)
-
-            udp.sendto(str(os.path.basename(file)).encode('ascii'), addr)
-            sleep(0.5)
-            udp.sendto(str(BUFFER).encode('ascii'), addr)
-            sleep(0.5)
-            udp.sendto(str(size).encode('ascii'), addr)
-
-            cont = 0
-            window = int(input("Insira a janela 2 ou 4: "))
-            if window != 2 and window != 4:
-                print("Janela inválida!")
-                exit()
-
+        file = input("Insira o arquivo a ser enviado: ")
+        size = os.path.getsize(file) * 8
+        window = int(input("Insira a janela 2 ou 4: "))
+        if window != 2 and window != 4:
+            print("Janela inválida!")
+            exit()
+        
+        self.udp_socket.sendto(f"{file}{self.sep}{size}{self.sep}{self.buffer}{self.sep}{window}".encode(), self.addr)
+        self.udp_socket.settimeout(0.02)
+        try:
             with open(file, "rb") as arq:
-                start = time()
-                packageToSend = arq.read(BUFFER)
-                while packageToSend:
-                    if udp.sendto(packageToSend, addr):
-                        packageToSend = arq.read(BUFFER)
-                        cont += 1
-                    if cont == 2:
-                        sleep(0.05)
-                        cont = 0
-                close = time()
+                pacote = arq.read(self.buffer)
+                inicio = time() 
+                while pacote:
+                    if len(pacotes) == window:
+                        try:
+                            for i in range(window):
+                                self.udp_socket.sendto(pacotes[i], self.addr)
+                                data, addr = self.udp_socket.recvfrom(self.buffer)
+                                if data.decode() == 'recebido':
+                                    pacotes_recebidos += 1
+                                    pacote = arq.read(self.buffer)
+                                if data.decode() == 'erro':
+                                    i = 0
+                                    pacotes_perdidos += 1
+                                pacotes_enviados += 1
+                            sleep(0.02)
+                        except Exception as e:
+                            print("dentro", e)
+                    else:
+                        pacotes.append(arq.read(self.buffer))
+                self.udp_socket.sendto('fim'.encode(), self.addr)
+                print("saiu")
+                if len(pacotes) > 0: 
+                    try:
+                        for i in range(window):
+                            self.udp_socket.sendto(pacotes[i], self.addr)
+                            data, addr = self.udp_socket.recvfrom(self.buffer)
+                            if data.decode() == 'recebido':
+                                pacotes_recebidos += 1
+                                pacote = arq.read(self.buffer)
+                            if data.decode() == 'erro':
+                                pacotes_perdidos += 1
+                            pacotes_enviados += 1
+                    except Exception as e:
+                        print("fora", e)
+                fim = time()
+               
 
+                transmissao = size / (fim - inicio)
                 print("Janela de transmissão: ", window)
-                formatedSize = locale.format_string('%.3f',arq.tell(), grouping=True)
-                print("Número de pacotes enviados: ",arq.tell() // BUFFER + 1)
+                formatedSize = locale.format_string('%.2f',(arq.tell() * 8), grouping=True)
+                print("Número de pacotes enviados: ",arq.tell() // self.buffer + 1)
+                print("Número de pacotes enviados: ",pacotes_enviados)
+                print("Número de pacotes perdidos: ", pacotes_perdidos)
                 print("Tamanho do arquivo: ", formatedSize)
-                print("Tempo de transmissão: ", close - start)
+                formatedSize = locale.format_string('%.2f', transmissao, grouping=True)
+                print("Tempo de transmissão: ", formatedSize)
 
             arq.close()
-
-
-            
+            self.udp_socket.close()
         except Exception as e:
-            print(e)
-            return
-
-udpFileTransfer = UDPFileTransfer()
-
-UDPFileTransfer.initialConfigs()
+            print("exit:",  e)
+            exit()
+        
+udp = UDPFileTrasnfer()
+udp.send()
