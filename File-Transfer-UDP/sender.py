@@ -61,13 +61,13 @@ class UDPFileTrasnfer:
                                     i = 0
                                     pacotes_perdidos += 1
                                 pacotes_enviados += 1
+                            pacotes = []
                             sleep(0.02)
                         except Exception as e:
                             print("dentro", e)
                     else:
                         pacotes.append(arq.read(self.buffer))
                 self.udp_socket.sendto('fim'.encode(), self.addr)
-                print("saiu")
                 if len(pacotes) > 0: 
                     try:
                         for i in range(window):
